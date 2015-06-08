@@ -1,0 +1,11 @@
+app/code/community/Fishpig/Wordpress	app/code/community/Fishpig/Wordpress
+app/design/adminhtml/default/default/layout/wordpress.xml	app/design/adminhtml/default/default/layout/wordpress.xml
+app/design/adminhtml/default/default/template/wordpress	app/design/adminhtml/default/default/template/wordpress
+app/design/frontend/base/default/layout/wordpress.xml	app/design/frontend/base/default/layout/wordpress.xml
+app/design/frontend/base/default/template/wordpress-addons/yarpp	app/design/frontend/base/default/template/wordpress-addons/yarpp
+app/design/frontend/base/default/template/wordpress	app/design/frontend/base/default/template/wordpress
+app/etc/modules/Fishpig_Wordpress.xml	app/etc/modules/Fishpig_Wordpress.xml
+app/locale/* app/locale/*
+js/fishpig/wordpress	js/fishpig/wordpress
+skin/frontend/base/default/wordpress	skin/frontend/base/default/wordpress
+
