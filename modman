@@ -5,7 +5,8 @@ app/design/frontend/base/default/layout/wordpress.xml	app/design/frontend/base/d
 app/design/frontend/base/default/template/wordpress-addons/yarpp/*	app/design/frontend/base/default/template/wordpress-addons/yarpp/*
 app/design/frontend/base/default/template/wordpress/*	app/design/frontend/base/default/template/wordpress/*
 app/etc/modules/Fishpig_Wordpress.xml	app/etc/modules/Fishpig_Wordpress.xml
-app/locale/* app/locale/*
+app/locale/en_US/Fishpig_Wordpress.csv	app/locale/en_US/Fishpig_Wordpress.csv
+app/locale/es_ES/Fishpig_Wordpress.csv	app/locale/es_ES/Fishpig_Wordpress.csv
 js/fishpig/wordpress/*	js/fishpig/wordpress/*
 skin/frontend/base/default/wordpress/*	skin/frontend/base/default/wordpress/*
 
