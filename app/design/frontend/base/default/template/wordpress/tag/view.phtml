@@ -1,0 +1,19 @@
+<?php
+/**
+ * @category    Fishpig
+ * @package     Fishpig_Wordpress
+ * @license     http://fishpig.co.uk/license.txt
+ * @author      Ben Tideswell <help@fishpig.co.uk>
+ */
+?>
+<?php $tag = $this->getTag() ?>
+<?php if ($tag): ?>
+	<div class="page-title">
+		<h1><?php echo $this->__('Tag Archives') ?>: <?php echo $tag->getName() ?></h1>
+	</div>
+	<?php if ($description = $tag->getDescription()): ?>
+		<p><?php echo $description ?></p>
+	<?php endif; ?>
+	<?php echo $this->getPostListHtml() ?>
+<?php endif; ?>
+

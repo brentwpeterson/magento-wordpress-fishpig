@@ -1,0 +1,25 @@
+<?php
+/**
+ * @category    Fishpig
+ * @package     Fishpig_Wordpress
+ * @license     http://fishpig.co.uk/license.txt
+ * @author      Ben Tideswell <help@fishpig.co.uk>
+ */
+?>
+<?php $_category = $this->getCategory() ?>
+<?php if ($_category): ?>
+	<div class="page-title">
+		<h1><?php echo $this->escapeHtml($_category->getName()) ?></h1>
+	</div>
+	<?php if ($imageUrl = $_category->getImageUrl()): ?>
+		<img src="<?php echo $imageUrl ?>" alt="<?php echo $this->escapeHtml($_category->getName()) ?>" class="max-width" />
+	<?php endif; ?>
+	<?php if ($description = $_category->getDescription()): ?>
+		<p class="blog-desc"><?php echo $description ?></p>
+	<?php endif; ?>
+	<?php if ($postList = trim($this->getPostListHtml())): ?>
+		<?php echo $postList ?>
+	<?php else: ?>
+		<p class="note-msg"><?php echo $this->__('There are no posts matching your selection.') ?>
+	<?php endif; ?>
+<?php endif; ?>
