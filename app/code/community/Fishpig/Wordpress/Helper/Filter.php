@@ -12,7 +12,7 @@ class Fishpig_Wordpress_Helper_Filter extends Fishpig_Wordpress_Helper_Abstract
 	 * Applies a set of filters to the given string
 	 *
 	 * @param string $content
-	 * @param Fishpig_Wordpress_Model_Post_Abstract $object
+	 * @param Fishpig_Wordpress_Model_Post $object
 	 * @param string $context
 	 * @return string
 	 */
@@ -46,7 +46,7 @@ class Fishpig_Wordpress_Helper_Filter extends Fishpig_Wordpress_Helper_Abstract
 	 * Apply shortcodes to the content
 	 *
 	 * @param string &$content
-	 * @param Fishpig_Wordpress_Model_Post_Abstract $object
+	 * @param Fishpig_Wordpress_Model_Post $post
 	 */
 	protected function _applyShortcodes(&$content, $object, $context)
 	{

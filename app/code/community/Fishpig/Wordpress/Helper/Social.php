@@ -49,7 +49,7 @@ class Fishpig_Wordpress_Helper_Social extends Fishpig_Wordpress_Helper_Abstract
 		return $this;
 	}
 	
-	public function getButtons(Fishpig_Wordpress_Model_Post_Abstract $post)
+	public function getButtons(Fishpig_Wordpress_Model_Post $post)
 	{
 		if ($this->isShareThis()) {
 			$buttonsHtml = $this->_getButtonsHtml();

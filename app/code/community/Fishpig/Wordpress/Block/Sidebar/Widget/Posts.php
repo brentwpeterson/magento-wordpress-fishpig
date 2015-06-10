@@ -17,20 +17,11 @@ implements Mage_Widget_Block_Interface
 	protected $_collection = null;
 	
 	/**
-	 * Cache for the pager block
-	 *
-	 * @var Fishpig_Wordpress_Block_Post_List_Pager
-	 */
-	protected $_pagerBlock = null;
-	
-	/**
 	 * Set the posts collection
 	 *
 	 */
 	protected function _beforeToHtml()
 	{
-		$this->getPagerBlock();
-		
 		parent::_beforeToHtml();
 
 		$this->setPosts($this->_getPostCollection());
@@ -74,15 +65,9 @@ implements Mage_Widget_Block_Interface
 		if (is_null($this->_collection)) {
 			$collection = Mage::getResourceModel('wordpress/post_collection')
 				->setOrderByPostDate()
+				->addIsViewableFilter()
 				->setPageSize($this->getNumber())
 				->setCurPage(1);
-				
-			if (Mage::getSingleton('customer/session')->isLoggedIn() && Mage::helper('wordpress')->isAddonInstalled('CS')) {
-				$collection->addStatusFilter(array('publish', 'private'));
-			}
-			else {
-				$collection->addStatusFilter('publish');
-			}
 	
 			if ($categoryId = $this->getCategoryId()) {
 				if (strpos($categoryId, ',') !== false) {
@@ -102,6 +87,9 @@ implements Mage_Widget_Block_Interface
 
 			if ($postTypes = $this->getPostType()) {
 				$collection->addPostTypeFilter(explode(',', $postTypes));
+			}
+			else {
+				$collection->addPostTypeFilter('post');
 			}
 
 			$this->_collection = $collection;
@@ -255,66 +243,5 @@ implements Mage_Widget_Block_Interface
 		}
 
 		return $this->__('1 Comment');	
-	}
-	
-	/**
-	 * Determine whether to show the pager or not
-	 *
-	 * @return bool
-	 */
-	public function canShowPager()
-	{
-		return $this->getShowPager();
-	}
-	
-	/**
-	 * Retrieve the pager HTML
-	 *
-	 * @return string
-	 */
-	public function getPagerHtml()
-	{
-		if ($this->getPagerBlock()) {
-			return $this->getPagerBlock()->toHtml();
-		}
-		
-		return '';
-	}
-	
-	/**
-	 * Retrieve the pager HTML
-	 *
-	 * @return string
-	 */
-	public function getPagerBlock()
-	{
-		if ($this->canShowPager()) {
-			if (is_null($this->_pagerBlock)) {
-				$pagerBlock = $this->getChild('pager');
-			
-				if (!$pagerBlock) {
-					$pagerBlock = $this->getLayout()
-						->createBlock('wordpress/post_list_pager', 'pager' .microtime().rand(1,9999));
-				}
-	
-				$pagerBlock->setLimit($this->getNumber())
-					->setPageVarName('pp')
-					->setAvailableLimit(array($this->getNumber() => $this->getNumber()));
-				
-				$pagerBlock->setCollection($this->_getPostCollection());
-				
-				$currentUri = str_replace(Mage::getBaseUrl(), '', $this->helper('core/url')->getCurrentUrl());
-
-				if (strpos($currentUri, '?') !== false) {
-					$currentUri = substr($currentUri, 0, strpos($currentUri, '?'));
-				}
-
-				$pagerBlock->setPagerBaseUrl(Mage::getUrl())->setPagerBaseUri($currentUri);
-		
-				$this->_pagerBlock = $pagerBlock;
-			}	
-		}
-
-		return $this->_pagerBlock;
 	}
 }

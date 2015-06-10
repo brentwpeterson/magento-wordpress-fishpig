@@ -21,26 +21,11 @@ class Fishpig_Wordpress_Model_Term extends Fishpig_Wordpress_Model_Abstract
 		$this->_init('wordpress/term');
 	}
 	
-	/**
-	 * Retrieve an array of the default WP taxonomies
-	 *
-	 * @return array
-	 */
-	public function getDefaultTermTaxonomyTypes()
+	public function getTaxonomyInstance()
 	{
-		return array('category', 'link_category', 'post_tag');
+		return Mage::helper('wordpress/app')->getTaxonomy($this->getTaxonomy());
 	}
-	
-	/**
-	 * Determine whether this term is a custom term or a default term
-	 *
-	 * @return bool
-	 */
-	public function isDefaultTerm()
-	{
-		return in_array($this->_getData('taxonomy'), $this->getDefaultTermTaxonomyTypes());
-	}
-	
+
 	/**
 	 * Retrieve the taxonomy label
 	 *
@@ -84,11 +69,7 @@ class Fishpig_Wordpress_Model_Term extends Fishpig_Wordpress_Model_Abstract
 	 */
 	public function getChildrenTerms()
 	{
-		if (!$this->hasChildrenTerms()) {
-			$this->setChildrenTerms($this->getCollection()->addParentFilter($this));
-		}
-		
-		return $this->_getData('children_terms');
+		return $this->getCollection()->addParentFilter($this);
 	}
 	
 	/**
@@ -98,27 +79,9 @@ class Fishpig_Wordpress_Model_Term extends Fishpig_Wordpress_Model_Abstract
 	 */    
     public function getPostCollection()
     {
-		if (!$this->hasPostCollection()) {
-			if ($this->getTaxonomy()) {
-				$posts = $this->_getObjectResourceModel()
-    				->addIsViewableFilter()
-    				->addTermIdFilter($this->getId(), $this->getTaxonomy());
-    			
-	    		$this->setPosts($posts);
-	    	}
-    	}
-    	
-    	return $this->_getData('posts');
-    }
-  
-	/**
-	 * Retrieve the object resource model
-	 *
-	 * @return Fishpig_Wordpress_Model_Resource_Post_Collection_Abstract
-	 */    
-    protected function _getObjectResourceModel()
-    {
-    	return parent::getPostCollection();
+		return parent::getPostCollection()
+			->addIsViewableFilter()
+			->addTermIdFilter($this->getId(), $this->getTaxonomy());
     }
       
 	/**
@@ -130,17 +93,6 @@ class Fishpig_Wordpress_Model_Term extends Fishpig_Wordpress_Model_Abstract
 	{
 		return $this->getCount();
 	}
-
-	/**
-	 * Load a term based on it's slug
-	 *
-	 * @param string $slug
-	 * @return $this
-	 */	
-	public function loadBySlug($slug)
-	{
-		return $this->load($slug, 'slug');
-	}
 	
 	/**
 	 * Retrieve the parent ID
@@ -149,9 +101,7 @@ class Fishpig_Wordpress_Model_Term extends Fishpig_Wordpress_Model_Abstract
 	 */	
 	public function getParentId()
 	{
-		return $this->_getData('parent')
-			? $this->_getData('parent')
-			: false;
+		return $this->_getData('parent') ? $this->_getData('parent') : false;
 	}
 	
 	/**
@@ -171,57 +121,55 @@ class Fishpig_Wordpress_Model_Term extends Fishpig_Wordpress_Model_Abstract
 	 */
 	public function getUrl()
 	{
-		if (!$this->hasUrl()) {
-			$this->setUrl(Mage::helper('wordpress')->getUrl($this->getUriPrefix() . '/' . $this->getUri() . '/'));
-		}
-		
-		return $this->_getData('url');
+		return Mage::helper('wordpress')->getUrl($this->getUri() . '/');
 	}
 	
 	/**
-	 * Retrieve the URI for this term
-	 * This takes into account parent relationships
-	 * This does not include the base URL
+	 * Retrieve the URL for this term
 	 *
 	 * @return string
 	 */
 	public function getUri()
 	{
 		if (!$this->hasUri()) {
-			$this->setUri($this->getResource()->getTermUri($this));
+			$this->setUri(
+				$this->getTaxonomyInstance()->getUriById($this->getId())
+			);
 		}
 		
 		return $this->_getData('uri');
 	}
 	
 	/**
-	 * Retrieve all of the URI's for this taxonomy type
+	 * Retrieve an image URL for the category
+	 * This uses the Category Images plugin (http://wordpress.org/plugins/categories-images/)
 	 *
-	 * @return string
+	 * @return false|string
 	 */
-	public function getAllUris()
+	public function getImageUrl()
 	{
-		return $this->getResource()->getUrisByTaxonomy($this->getTaxonomyType());
+		return ($imageUrl = Mage::helper('wordpress')->getWpOption('z_taxonomy_image' . $this->getId()))
+			 ? $imageUrl
+			 : false;
 	}
 	
 	/**
-	 * Retrieve the 	URI prefix for all URL's
+	 * Get the children terms
 	 *
-	 * @return string
+	 * @deprecated - 3.2.0.0 / use self::getChildrenTerms
 	 */
-	public function getUriPrefix()
+	public function getChildrenCategories()
 	{
-		return $this->getTaxonomyType();
+		return $this->getChildrenTerms();
 	}
 	
 	/**
-	 * Determine whether $post is in the current term
+	 * Get the number of posts belonging to the term
 	 *
-	 * @param int|Fishpig_Wordpress_Model_Post_Abstract $post
-	 * @return bool
+	 * @return int
 	 */
-	public function containsPost($post)
+	public function getPostCount()
 	{
-		return $this->getResource()->containsPost($this, $post);
+		return (int)$this->getCount();
 	}
 }

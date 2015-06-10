@@ -22,7 +22,8 @@ class Fishpig_Wordpress_Block_Post_Associated extends Fishpig_Wordpress_Block_Ab
 	 */
 	protected function _prepareLayout()
 	{
-		$this->helper('wordpress/database')->connect();
+		// Force database connection to WP
+		$this->helper('wordpress/app')->getDbConnection();
 		
 		return parent::_prepareLayout();
 	}

@@ -34,8 +34,6 @@ class Fishpig_Wordpress_AuthorController extends Fishpig_Wordpress_Controller_Ab
 		));
 			
 		$this->_initLayout();
-		
-		$this->_rootTemplates[] = 'post_list';
 	
 		$this->_title($author->getDisplayName());
 		$this->addCrumb('author_nolink', array('label' => $this->__('Author')));
@@ -59,8 +57,6 @@ class Fishpig_Wordpress_AuthorController extends Fishpig_Wordpress_Controller_Ab
 		));
 			
 		$this->_initLayout();
-		
-		$this->_rootTemplates[] = 'author_bio';
 	
 		$this->_title($author->getDisplayName());
 		$this->addCrumb('author_nolink', array('label' => $this->__('Author')));

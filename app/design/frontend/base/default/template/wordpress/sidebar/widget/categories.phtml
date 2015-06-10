@@ -40,7 +40,7 @@
 								<?php echo $category->getName() ?>
 							</a><?php if ($this->getCount()): ?> (<?php echo $category->getPostCount() ?>)<?php endif; ?>
 							<?php if ($this->getHierarchical()): ?>
-								<?php $children = $category->getChildrenCategories() ?>
+								<?php $children = $category->getChildrenTerms() ?>
 								<?php if (count($children) > 0): ?>
 									<ul class="level1">
 										<?php foreach($children as $child): ?>

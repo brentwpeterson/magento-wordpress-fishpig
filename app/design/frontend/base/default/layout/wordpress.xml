@@ -135,32 +135,6 @@
 	</wordpress_post_view>
 	<!--
 	/**
-	 * Blog post category
-	 *
-	 */
-	 -->
-	<wordpress_post_category_view>
-		<reference name="content">
-			<block type="wordpress/category_view" name="wp.post.category" template="wordpress/category/view.phtml">
-				<block type="wordpress/post_list" name="wordpress_post_list" as="post_list" template="wordpress/post/list.phtml" />
-			</block>
-		</reference>
-	</wordpress_post_category_view>
-	<!--
-	/**
-	 * Individual Tag page that lists posts
-	 *
-	 */
-	 -->
-	<wordpress_post_tag_view>
-		<reference name="content">
-			<block type="wordpress/tag_view" name="wp.post.tag" template="wordpress/tag/view.phtml">
-				<block type="wordpress/post_list" name="wordpress_post_list" as="post_list" template="wordpress/post/list.phtml" />
-			</block>
-		</reference>
-	</wordpress_post_tag_view>
-	<!--
-	/**
 	 * WordPress Term Page
 	 *
 	 */
@@ -268,33 +242,6 @@
 			</block>
 		</reference>
 	</cms_page>
-	<!--
-	/**
-	 * AddThis
-	 *
-	 */
-	 -->
-	<wordpress_addon_addthis_default>
-		<reference name="post.content.before">
-			<block type="wp_addon_addthis/icons" name="wp.post.addthis.above" as="addthis" before="-">
-				<action method="setPosition"><position>above</position></action>
-			</block>
-		</reference>
-		<reference name="post.content.after">
-			<block type="wp_addon_addthis/icons" name="wp.post.addthis.below" as="addthis" before="-">
-				<action method="setPosition"><position>below</position></action>
-			</block>
-		</reference>
-		<reference name="before_body_end">
-			<block type="wp_addon_addthis/js" name="wp.addthis.js" />
-		</reference>
-	</wordpress_addon_addthis_default>
-	<wordpress_post_view>
-		<update handle="wordpress_addon_addthis_default" />
-	</wordpress_post_view>
-	<wordpress_post_list>
-		<update handle="wordpress_addon_addthis_default" />
-	</wordpress_post_list>
 	<!--
 	/**
 	 * YARPP

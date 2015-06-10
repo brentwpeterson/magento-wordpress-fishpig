@@ -95,10 +95,10 @@ class Fishpig_Wordpress_Block_Post_List extends Fishpig_Wordpress_Block_Post_Abs
 	/**
 	 * Retrieve the correct renderer and template for $post
 	 *
-	 * @param Fishpig_Wordpress_Model_Post_Abstract $post
+	 * @param Fishpig_Wordpress_Model_Post $post
 	 * @return Fishpig_Wordpress_Block_Post_List_Renderer
 	 */
-	public function getPostRenderer(Fishpig_Wordpress_Model_Post_Abstract $post)
+	public function getPostRenderer(Fishpig_Wordpress_Model_Post $post)
 	{
 		if (!$this->hasPostRenderer()) {
 			$this->setPostRenderer(

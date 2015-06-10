@@ -15,7 +15,7 @@ class Fishpig_Wordpress_Addon_Yarpp_Block_Sidebar_Widget extends Fishpig_Wordpre
 	 */
 	public function isEnabled()
 	{
-		return Mage::helper('wordpress')->isPluginEnabled('yarpp');
+		return Mage::helper('wordpress')->isPluginEnabled('yet-another-related-posts-plugin/yarpp.php');
 	}
 	
 	/**
@@ -112,10 +112,10 @@ class Fishpig_Wordpress_Addon_Yarpp_Block_Sidebar_Widget extends Fishpig_Wordpre
 	/**
 	 * Retrieve the thumbnail image for a post
 	 *
-	 * @param Fishpig_Wordpress_Model_Post_Abstract $post
+	 * @param Fishpig_Wordpress_Model_Post $post
 	 * @return string
 	 */
-	public function getThumbnailImage(Fishpig_Wordpress_Model_Post_Abstract $post)
+	public function getThumbnailImage(Fishpig_Wordpress_Model_Post $post)
 	{
 		if (($image = $post->getFeaturedImage()) !== false) {
 			return $image->getAvailableImage();
@@ -241,9 +241,9 @@ class Fishpig_Wordpress_Addon_Yarpp_Block_Sidebar_Widget extends Fishpig_Wordpre
 			return array();
 		}
 
-		$helper = Mage::helper('wordpress/database');
+		$helper = Mage::helper('wordpress/app');
 
-		$select = $helper->getReadAdapter()
+		$select = $helper->getDbConnection()
 			->select()
 			->from($helper->getTableName('yarpp_related_cache'), 'ID')
 			->where('reference_ID=?', $post->getId())
@@ -252,7 +252,7 @@ class Fishpig_Wordpress_Addon_Yarpp_Block_Sidebar_Widget extends Fishpig_Wordpre
 			->limit($this->getLimit() ? $this->getLimit() : 5);
 
 		try {
-			return $helper->getReadAdapter()->fetchCol($select);
+			return $helper->getDbConnection()->fetchCol($select);
 		}
 		catch (Exception $e) {
 			Mage::helper('wordpress')->log($e->getMessage());

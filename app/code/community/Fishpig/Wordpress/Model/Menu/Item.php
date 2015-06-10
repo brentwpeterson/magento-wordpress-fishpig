@@ -6,7 +6,7 @@
  * @author      Ben Tideswell <help@fishpig.co.uk>
  */
  
-class Fishpig_Wordpress_Model_Menu_Item extends Fishpig_Wordpress_Model_Post_Abstract
+class Fishpig_Wordpress_Model_Menu_Item extends Fishpig_Wordpress_Model_Post
 {
 	/**
 	 * Link types used to determine menu item functionality

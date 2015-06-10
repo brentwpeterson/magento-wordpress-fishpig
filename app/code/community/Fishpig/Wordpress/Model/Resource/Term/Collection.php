@@ -158,22 +158,6 @@ class Fishpig_Wordpress_Model_Resource_Term_Collection extends Fishpig_Wordpress
 	}
 	
 	/**
-	 * Filter the collection on the default taxonomies
-	 * If $isDefault = false, non-default taxonomies will be returned
-	 *
-	 * @param $isDefault bool
-	 * @return $this
-	 */
-	public function addDefaultTaxonomyFilter($isDefault = true)
-	{
-		$op = $isDefault ? 'IN' : 'NOT IN';
-
-		$this->getSelect()->where('taxonomy.taxonomy ' . $op . ' (?)', $this->getNewEmptyItem()->getDefaultTermTaxonomyTypes());
-
-		return $this;
-	}
-	
-	/**
 	 * Determine whether the term has objects associated with it
 	 *
 	 * @return $this
@@ -181,5 +165,25 @@ class Fishpig_Wordpress_Model_Resource_Term_Collection extends Fishpig_Wordpress
 	public function addHasObjectsFilter()
 	{
 		return $this->addFieldToFilter('count', array('gt' => 0));
+	}
+	
+	/**
+	 * Filter the collection so that only tags in the cloud
+	 * are returned
+	 *
+	 */
+	public function addCloudFilter($taxonomy)
+	{
+		$cloudIdsSelect = Mage::getResourceModel('wordpress/term_collection')
+			->addTaxonomyFilter($taxonomy)
+			->addOrderByItemCount()
+			->setPageSize(20)
+			->setCurPage(1)
+				->getSelect()
+					->setPart('columns', array())
+					->columns(array('main_table.term_id'));		
+
+		return $this->addTaxonomyFilter($taxonomy)
+			->addFieldToFilter('main_table.term_id', array('in' => new Zend_Db_Expr($cloudIdsSelect)));
 	}
 }

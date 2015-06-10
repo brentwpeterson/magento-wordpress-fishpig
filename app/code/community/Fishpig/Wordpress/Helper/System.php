@@ -8,6 +8,8 @@
 
 class Fishpig_Wordpress_Helper_System extends Fishpig_Wordpress_Helper_Abstract
 {
+	protected $_integrationTestResults = null;
+	
 	/**
 	 * Generate and retrieve the integration test results
 	 *
@@ -19,26 +21,24 @@ class Fishpig_Wordpress_Helper_System extends Fishpig_Wordpress_Helper_Abstract
 			return false;
 		}
 
-		$results = array();
+		$this->_integrationTestResults = array();
 
-		Mage::dispatchEvent('wordpress_integration_tests_before', array('results' => $results, 'helper' => $this));
+		Mage::dispatchEvent('wordpress_integration_tests_before', array('helper' => $this));
 		
-		if ($this->applyTest('_validateDatabaseConnection', $results)) {
+		if ($this->applyTest('_validateDatabaseConnection')) {
 			if (Mage::helper('wordpress')->isFullyIntegrated()) {
-				$this->applyTest('_validateHomeUrl', $results);
-				$this->applyTest('_validatePath', $results);
-				$this->applyTest('_validateTheme', $results);
-				$this->applyTest('_validatePlugins', $results, array());
-				$this->applyTest('_validatePermalinks', $results);
-				$this->applyTest('_validateHtaccess', $results);
-#				$this->applyTest('_upsellCustomerSynchronisation', $results);
-#				$this->applyTest('_upsellReCaptcha', $results);
+				$this->applyTest('_validateHomeUrl');
+				$this->applyTest('_validatePath');
+				$this->applyTest('_validateTheme');
+				$this->applyTest('_validatePlugins', array());
+				$this->applyTest('_validatePermalinks');
+				$this->applyTest('_validateHtaccess');
+				
+				Mage::dispatchEvent('wordpress_integration_tests_after', array('helper' => $this));
 			}
 		}
 
-		Mage::dispatchEvent('wordpress_integration_tests_after', array('results' => $results, 'helper' => $this));
-
-		return $results;
+		return $this->_integrationTestResults;
 	}
 	
 	/**
@@ -48,7 +48,7 @@ class Fishpig_Wordpress_Helper_System extends Fishpig_Wordpress_Helper_Abstract
 	 */
 	protected function _validateDatabaseConnection()
 	{
-		if (!Mage::helper('wordpress/database')->isConnected()) {
+		if (Mage::helper('wordpress/app')->getDbConnection() === false) {
 			throw Fishpig_Wordpress_Exception::error(
 				'Database Error',
 				$this->__('Error establishing a database connection')
@@ -145,7 +145,7 @@ class Fishpig_Wordpress_Helper_System extends Fishpig_Wordpress_Helper_Abstract
 		$results = $params->getResults();
 		
 		foreach((array)$xml->fishpig->extensions as $moduleName => $data) {
-			$this->applyTest('_validatePlugin', $results, array_merge(
+			$this->applyTest('_validatePlugin', array_merge(
 				(array)$data, 
 				array('current_version' => (string)Mage::getConfig()->getNode()->modules->$moduleName->version)
 			));
@@ -190,7 +190,9 @@ class Fishpig_Wordpress_Helper_System extends Fishpig_Wordpress_Helper_Abstract
 	 */
 	protected function _validatePermalinks()
 	{
-		if (Mage::helper('wordpress/post')->useGuidLinks()) {
+		Mage::helper('wordpress/app')->init();
+		
+		if (Mage::getModel('wordpress/post')->setPostType('post')->getTypeInstance()->useGuidLinks()) {
 			throw Fishpig_Wordpress_Exception::warning(
 				'Permalinks',
 				'You are using the default permalinks. To stop potential duplicate content issues, change them to something else in the WordPress Admin.'
@@ -199,111 +201,7 @@ class Fishpig_Wordpress_Helper_System extends Fishpig_Wordpress_Helper_Abstract
 		
 		return $this;
 	}
-	
-	/**
-	 * Recommend Customer Synchronisation if multiple WP users exist
-	 *
-	 * @return $this
-	 */
-	protected function _upsellCustomerSynchronisation()
-	{
-		try {
-			if (count(Mage::getResourceModel('wordpress/user_collection')) > 9) {			
-				if (!Mage::helper('wordpress')->isAddonInstalled('Fishpig_Wordpress_Addon_CS')) {
-					throw Fishpig_Wordpress_Exception::warning(
-						'Single Sign-On',
-						$this->__(
-							'Synchronise your WordPress users and Magento customers with the <a href="%s" target="_blank">Customer Synchronisation</a> addon.',
-							'http://fishpig.co.uk/magento/wordpress-integration/customer-synchronisation/?utm_source=Fishpig_Wordpress&utm_medium=System%20Configuration&utm_term=Fishpig_Wordpress_Addon_CS&utm_campaign=UpSell'
-						)
-					);
-				}
-			}
-		}
-		catch (Fishpig_Wordpress_Exception $e) {
-			throw $e;	
-		}
-		catch (Exception $e) {
-			Mage::helper('wordpress')->log($e);
-		}
-		
-		return $this;
-	}
-	
-	/**
-	 * Recommend ReCaptcha to combat spam comments
-	 *
-	 * @return void
-	 */
-	protected function _upsellReCaptcha()
-	{
-		if (!Mage::helper('wordpress')->isAddonInstalled('Fishpig_Wordpress_Addon_ReCaptcha')) {
-			$comments = Mage::getResourceModel('wordpress/post_comment_collection')
-				->addCommentApprovedFilter('spam')
-				->load();
-			
-			if (count($comments) > 10) {
-				throw Fishpig_Wordpress_Exception::warning(
-					'ReCaptcha',
-					$this->__(
-						'Stop WordPress comment spam with <a href="%s" target="_blank">ReCaptcha</a>.',
-						'http://fishpig.co.uk/magento/wordpress-integration/recaptcha/?utm_source=Fishpig_Wordpress&utm_medium=System%20Configuration&utm_term=Fishpig_Wordpress_Addon_ReCaptcha&utm_campaign=UpSell'
-					)
-				);
-			}
-		}
-	}
-				
-	/**
-	 * Check whether the user has left a review
-	 *
-	 * @return void
-	 */
-	protected function _checkForReviews()
-	{
-		return $this;
 
-		$modules = array_keys(Mage::app()->getConfig()->getNode('modules')->asArray());
-		$fishpigModules = array();
-
-		foreach($modules as $module) {
-			if (strpos($module, 'Fishpig_Wordpress') === 0) {
-				if (is_null(Mage::getStoreConfig('wordpress/review/' . strtolower($module)))) {
-					$fishpigModules[] = $module;
-				}
-			}
-		}
-		
-		if (in_array('Fishpig_Wordpress', $fishpigModules) !== false) {
-			throw Fishpig_Wordpress_Exception::warning(
-				'Review',
-				$this->__(
-					'Do you like WordPress Integration? Help keep the extension free by <a href="%s" class="fp-review" target="_blank">leaving a review</a>.',
-					'http://fishpig.co.uk/magento/wordpress-integration/#reviews'
-				)
-			);
-		}
-		
-		shuffle($fishpigModules);
-		
-		foreach($fishpigModules as $module) {
-			$moduleUrl = (string)Mage::app()->getConfig()->getNode('modules/' . $module . '/fishpig/url');
-			$moduleName = (string)Mage::app()->getConfig()->getNode('modules/' . $module . '/fishpig/name');
-			
-			if ($moduleUrl && $moduleName) {
-				throw Fishpig_Wordpress_Exception::warning(
-					'Review',
-					$this->__(
-						'Do you like %s? Help keep the %s great by <a href="%s#reviews" class="fp-review" target="_blank">leaving a review</a>.',
-						$moduleName, $moduleName, $moduleUrl
-					)
-				);
-			}
-		}
-		
-		return $this;
-	}
-	
 	/**
 	 * Ensure the .htaccess file exists and doesn't reference the blog route
 	 *
@@ -344,14 +242,14 @@ class Fishpig_Wordpress_Helper_System extends Fishpig_Wordpress_Helper_Abstract
 	 * @param mixed $params = null
 	 * @return mixed
 	 */
-	public function applyTest($func, &$results, $params = null)
+	public function applyTest($func, $params = null)
 	{
 		$funcResult = false;
 		
 		try {
 			if (is_array($params)) {
 				$params = new Varien_Object($params);
-				$params->setResults($results);
+				$params->setResults($this->_integrationTestResults);
 			}
 			else {
 				$params = null;
@@ -384,15 +282,15 @@ class Fishpig_Wordpress_Helper_System extends Fishpig_Wordpress_Helper_Abstract
 				default:
 					$colour = '#444';
 			}
-			
-			$results[] = new Varien_Object(array(
+
+			$this->_integrationTestResults[] = new Varien_Object(array(
 				'title' => Mage::helper('wordpress')->__($e->getMessage()),
 				'message' => $e->getLongMessage(),
 				'bg_colour' => $colour,
 			));
 		}
 		catch (Exception $e) {
-			$results[] = new Varien_Object(array(
+			$this->_integrationTestResults[] = new Varien_Object(array(
 				'title' => Mage::helper('wordpress')->__('An unidentified error has occurred.'),
 				'message' => $e->getMessage(),
 				'bg_colour' => '#444',

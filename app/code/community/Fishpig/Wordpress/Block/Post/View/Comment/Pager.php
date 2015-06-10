@@ -15,7 +15,7 @@ class Fishpig_Wordpress_Block_Post_View_Comment_Pager extends Fishpig_Wordpress_
 	 */
 	public function getLimit()
 	{
-		$this->_limit = $this->getRequest()->getParam('limit', $this->helper('wordpress/post')->getCommentsPerPage());
+		$this->_limit = $this->getRequest()->getParam('limit', Mage::helper('wordpress')->getWpOption('comments_per_page', 50));
 
 		return $this->_limit;
 	}

@@ -12,7 +12,7 @@ class Fishpig_Wordpress_Helper_Associations extends Fishpig_Wordpress_Helper_Abs
 	 * Retrieve a collection of post's associated with the given product
 	 *
 	 * @param Mage_Catalog_Model_Product $product
-	 * @return false|Fishpig_Wordpress_Model_Resource_Post_Collection_Abstract
+	 * @return false|Fishpig_Wordpress_Model_Resource_Post_Collection
 	 */
 	public function getAssociatedPostsByProduct(Mage_Catalog_Model_Product $product)
 	{
@@ -43,7 +43,7 @@ class Fishpig_Wordpress_Helper_Associations extends Fishpig_Wordpress_Helper_Abs
 	 * Retrieve a collection of post's associated with the given product
 	 *
 	 * @param Mage_Cms_Model_Page $page
-	 * @return false|Fishpig_Wordpress_Model_Resource_Post_Collection_Abstract
+	 * @return false|Fishpig_Wordpress_Model_Resource_Post_Collection
 	 */
 	public function getAssociatedPostsByCmsPage(Mage_Cms_Model_Page $page)
 	{
@@ -70,7 +70,7 @@ class Fishpig_Wordpress_Helper_Associations extends Fishpig_Wordpress_Helper_Abs
 	 * @param Fishpig_Wordpress_Model_Post $post
 	 * @return Mage_Catalog_Model_Resource_Eav_Mysql4_Product_Collection
 	 */
-	public function getAssociatedProductsByPost(Fishpig_Wordpress_Model_Post_Abstract $post)
+	public function getAssociatedProductsByPost(Fishpig_Wordpress_Model_Post $post)
 	{
 		if (!($post instanceof Fishpig_Wordpress_Model_Post)) {
 			return false;
@@ -348,8 +348,8 @@ class Fishpig_Wordpress_Helper_Associations extends Fishpig_Wordpress_Helper_Abs
 			));
 			
 			$dbname = $collection->getTable('wordpress/association');
-			
-			if (!Mage::helper('wordpress/database')->isSameDatabase()) {
+
+			if (!Mage::helper('wordpress/config')->getConfigFlag('wordpress/database/is_shared')) {
 				$dbname = (string)Mage::getConfig()->getNode('global/resources/default_setup/connection/dbname') . '.' . $dbname;
 			}
 			
@@ -362,7 +362,6 @@ class Fishpig_Wordpress_Helper_Associations extends Fishpig_Wordpress_Helper_Abs
 				);
 				
 			$collection->getSelect()->order('assoc.store_id DESC');
-//				->order('assoc.position ASC');
 		}
 		
 		return $this;
@@ -436,7 +435,7 @@ class Fishpig_Wordpress_Helper_Associations extends Fishpig_Wordpress_Helper_Abs
 			'object_id'
 		);
 		
-		return Mage::helper('wordpress/database')->getReadAdapter()->fetchCol($select);
+		return Mage::helper('wordpress/app')->getDbConnection()->fetchCol($select);
 	}
 
 	/**

@@ -6,7 +6,7 @@
  * @author      Ben Tideswell <help@fishpig.co.uk>
  */
 
-class Fishpig_Wordpress_Model_Resource_Menu_Item extends Fishpig_Wordpress_Model_Resource_Post_Abstract
+class Fishpig_Wordpress_Model_Resource_Menu_Item extends Fishpig_Wordpress_Model_Resource_Post
 {
 	public function _construct()
 	{

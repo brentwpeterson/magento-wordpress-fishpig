@@ -51,7 +51,7 @@ class Fishpig_Wordpress_Block_Sidebar_Widget_Calendar extends Fishpig_Wordpress_
 			->columns(array('posts_on_day' => 'SUBSTR(main_table.post_date, 9, 2)'))
 			->where('main_table.post_type=?', 'post');
 
-		$days = Mage::helper('wordpress/database')->getReadAdapter()->fetchCol($posts->getSelect());
+		$days = Mage::helper('wordpress/app')->getDbConnection()->fetchCol($posts->getSelect());
 
 		$itemsByDay = array_combine(range(1, $this->getDaysInMonth()), range(1, $this->getDaysInMonth()));
 

@@ -71,7 +71,7 @@ class Fishpig_Wordpress_Addon_WordPressSEO_Helper_Data extends Fishpig_Wordpress
 	 */
 	public function isEnabled()
 	{
-		return Mage::helper('wordpress')->isPluginEnabled('Wordpress SEO');
+		return Mage::helper('wordpress')->isPluginEnabled('wordpress-seo/wp-seo.php');
 	}
 
 	/**
@@ -187,9 +187,10 @@ class Fishpig_Wordpress_Addon_WordPressSEO_Helper_Data extends Fishpig_Wordpress
 	public function processRouteWordPressPostView($post)	
 	{
 		$this->_applyPostPageLogic($post);
-
+		
+		/*
 		if ($post->getPostType() !== 'post' && Mage::helper('wordpress')->isAddonInstalled('CPT')) {
-			$postType = Mage::helper('wp_addon_cpt')->getPostType($post->getPostType());
+			$postType = $post->getTypeInstance();
 			
 			if ($postType !== false) {
 				$crumbs = $this->getAction()->getCrumbs();
@@ -210,6 +211,7 @@ class Fishpig_Wordpress_Addon_WordPressSEO_Helper_Data extends Fishpig_Wordpress
 				$this->getAction()->addCrumb('post', array('label' => $post->getPostTitle()));
 			}
 		}
+		*/
 		
 		return $this;
 	}
@@ -241,9 +243,9 @@ class Fishpig_Wordpress_Addon_WordPressSEO_Helper_Data extends Fishpig_Wordpress
 	protected function _applyPostPageLogic($object, $type = 'post')
 	{
 		$meta = new Varien_Object(array(
-			'title' => $this->_getTitleFormat($type),
-			'description' => trim($this->getData('metadesc_' . $type)),
-			'keywords' => trim($this->getData('metakey_' . $type)),
+			'title' => $this->_getTitleFormat($object->getPostType()),
+			'description' => trim($this->getData('metadesc_' . $object->getPostType())),
+			'keywords' => trim($this->getData('metakey_' . $object->getPostType())),
 		));
 
 		if (($value = trim($object->getMetaValue('_yoast_wpseo_title'))) !== '') {
@@ -303,7 +305,7 @@ class Fishpig_Wordpress_Addon_WordPressSEO_Helper_Data extends Fishpig_Wordpress
 		}
 		
 		if (!$this->hasOpengraph() || (int)$this->getOpengraph() ===1) {
-			$this->_addPostOpenGraphTags($object, $type);
+			$this->_addPostOpenGraphTags($object, $object->getPostType());
 		}
 		
 		if ($this->getTwitter()) {
@@ -323,25 +325,25 @@ class Fishpig_Wordpress_Addon_WordPressSEO_Helper_Data extends Fishpig_Wordpress
 	 *
 	 * @param Varien_Object $category
 	 */
-	public function processRouteWordpressPostCategoryView($category)
+	public function processRouteWordpressTermView($term)
 	{
 		$this->_applyMeta(array(
-			'title' => $this->getTitleTaxCategory(),
-			'description' => $this->getMetadescTaxCategory(),
-			'keywords' => $this->getMetakeyTaxCategory(),
-			'robots' => $this->getNoindexTaxCategory() ? 'noindex,follow' : '',
+			'title' => $this->getData('title_tax_' . $term->getTaxonomyType()),
+			'description' => $this->getData('metadesc_tax_' . $term->getTaxonomyType()),
+			'keywords' => $this->getData('metakey_tax_' . $term->getTaxonomyType()),
+			'robots' => $this->getData('noindex_tax_' . $term->getTaxonomyType()) ? 'noindex,follow' : '',
 		));
 		
 		$this->_applyOpenGraph(array(
 			'type' => 'object',
-			'title' => $category->getName(),
-			'url' => $category->getUrl(),
-			'description' => $category->getDescription(),
+			'title' => $term->getName(),
+			'url' => $term->getUrl(),
+			'description' => $term->getDescription(),
 		));
 
 		if ($meta = @unserialize(Mage::helper('wordpress')->getWpOption('wpseo_taxonomy_meta'))) {
-			if (isset($meta['category']) && isset($meta['category'][$category->getId()])) {
-				$meta = new Varien_Object((array)$meta['category'][$category->getId()]);
+			if (isset($meta[$term->getTaxonomyType()]) && isset($meta[$term->getTaxonomyType()][$term->getId()])) {
+				$meta = new Varien_Object((array)$meta[$term->getTaxonomyType()][$term->getId()]);
 
 				$this->_applyMeta(array(
 					'title' => $meta->getWpseoTitle(),
@@ -356,7 +358,7 @@ class Fishpig_Wordpress_Addon_WordPressSEO_Helper_Data extends Fishpig_Wordpress
 				$this->_applyOpenGraph(array(
 					'title' => $meta->getWpseoTitle(),
 					'description' => $meta->getWpseoDesc(),
-					'url' => $category->getCanonicalUrl(),
+					'url' => $term->getCanonicalUrl(),
 				));
 			}
 		}
@@ -425,31 +427,6 @@ class Fishpig_Wordpress_Addon_WordPressSEO_Helper_Data extends Fishpig_Wordpress
 	}
 	
 	/**
-	 * Tag page
-	 *
-	 * @param Varien_Object $tag
-	 */
-	public function processRouteWordpressPostTagView($tag)
-	{
-		$meta = new Varien_Object(array(
-			'title' => $this->getTitleTaxPostTag(),
-			'description' => $this->getMetadescTaxPostTag(),
-			'keywords' => $this->getMetakeyTaxPostTag(),
-			'robots' => $this->getNoindexTaxPostTag() ? 'noindex,follow' : '',
-		));
-
-		$this->_applyMeta($meta->getData());
-
-		$this->_applyOpenGraph(array(
-			'type' => 'object',
-			'url' => $tag->getUrl(),
-			'title' => $this->_rewriteString($meta->getTitle()),
-		));
-
-		return $this;
-	}
-	
-	/**
 	 * Process the search results page
 	 *
 	 * @param $object
@@ -481,8 +458,8 @@ class Fishpig_Wordpress_Addon_WordPressSEO_Helper_Data extends Fishpig_Wordpress
 	public function processRouteWpAddonCptIndexView($object)
 	{
 		$this->_applyMeta(array(
-			'title' => $this->_getTitleFormat('ptarchive_' .$object->getType()),
-			'description' => trim($this->getData('metadesc-ptarchive-' . $object->getType())),
+			'title' => $this->_getTitleFormat('ptarchive_' .$object->getPostType()),
+			'description' => trim($this->getData('metadesc_ptarchive_' . $object->getPostType())),
 		));
 		
 		if (Mage::helper('wordpress')->isAddonInstalled('Root')) {
@@ -656,18 +633,6 @@ class Fishpig_Wordpress_Addon_WordPressSEO_Helper_Data extends Fishpig_Wordpress
 				$data['id'] = $object->getId();
 				$data['name'] = $object->getAuthor()->getUserNicename();
 				$data['userid'] = $object->getAuthor()->getId();
-			}
-			
-			if (($category = Mage::registry('wordpress_category')) !== null) {
-				$data['category_description'] = trim(strip_tags($category->getDescription()));
-				$data['term_description'] = $data['category_description'];
-				$data['term_title'] = $category->getName();
-			}
-			
-			if (($tag = Mage::registry('wordpress_post_tag')) !== null) {
-				$data['tag_description'] = trim(strip_tags($tag->getDescription()));
-				$data['term_description'] = $data['tag_description'];
-				$data['term_title'] = $tag->getName();
 			}
 			
 			if (($term = Mage::registry('wordpress_term')) !== null) {

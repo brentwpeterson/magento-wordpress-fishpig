@@ -44,12 +44,8 @@ class Fishpig_Wordpress_Controller_Router extends Fishpig_Wordpress_Controller_R
 		}
 		
 		$this->addRouteCallback(array($this, '_getSimpleRoutes'));
-		$this->addRouteCallback(array($this, '_getPostCategoryRoutes'));
-		$this->addRouteCallback(array($this, '_getPageRoutes'));
 		$this->addRouteCallback(array($this, '_getPostRoutes'));
-		$this->addRouteCallback(array($this, '_getPostAttachmentRoutes'));
-		$this->addRouteCallback(array($this, '_getCustomTaxonomyUris'));
-		$this->addRouteCallback(array($this, '_getPostNonCanonicalRoutes'));
+		$this->addRouteCallback(array($this, '_getTaxonomyRoutes'));
 		
 		return $this;	
 	}
@@ -62,17 +58,12 @@ class Fishpig_Wordpress_Controller_Router extends Fishpig_Wordpress_Controller_R
 	 */
 	protected function _getHomepageRoutes($uri = '')
 	{
-		// NextGEN Gallery fix
-		if (Mage::app()->getRequest()->getParam('format') === 'json') {
-			return $this->addRoute('', '*/index/forward');
-		}
-
 		if ($postId = Mage::app()->getRequest()->getParam('p')) {
 			return $this->addRoute('', '*/post/view', array('p' => $postId, 'id' => $postId));
 		}
 
 		if (($pageId = $this->_getHomepagePageId()) !== false) {
-			return $this->addRoute('', '*/page/view', array('id' => $pageId, 'is_home' => 1));
+			return $this->addRoute('', '*/post/view', array('id' => $pageId, 'post_type' => 'page', 'home' => 1));
 		}
 	
 		$this->addRoute('', '*/index/index');
@@ -91,8 +82,7 @@ class Fishpig_Wordpress_Controller_Router extends Fishpig_Wordpress_Controller_R
 		if (strpos($uri, 'ajax/') === 0) {
 			$this->_getAjaxRoutes($uri);
 		}
-
-		$this->addRoute(array('/^' . preg_quote(Mage::getSingleton('wordpress/post_tag')->getUriPrefix(), '/') . '\/(.*)$/' => array('tag')), '*/post_tag/view');
+		
 		$this->addRoute(array('/^author\/([^\/]{1,})/' => array('author')), '*/author/view');
 		$this->addRoute(array('/^([1-2]{1}[0-9]{3})\/([0-1]{1}[0-9]{1})$/' => array('year', 'month')), '*/archive/view');
 		$this->addRoute(array('/^([1-2]{1}[0-9]{3})\/([0-1]{1}[0-9]{1})$/' => array('year', 'month')), '*/archive/view');
@@ -108,7 +98,7 @@ class Fishpig_Wordpress_Controller_Router extends Fishpig_Wordpress_Controller_R
 		$this->addRoute('robots.txt', '*/index/robots');
 		$this->addRoute('comments', '*/index/commentsFeed');
 		$this->addRoute(array('/^newbloguser\/(.*)$/' => array('code')), '*/index/forwardNewBlogUser');
-		
+
 		return $this;
 	}
 
@@ -128,99 +118,6 @@ class Fishpig_Wordpress_Controller_Router extends Fishpig_Wordpress_Controller_R
 	}
 
 	/**
-	 * Generate the post category routes
-	 *
-	 * @param string $uri = ''
-	 * @return false|$this
-	 */
-	protected function _getPostCategoryRoutes($uri = '')
-	{
-		$categoryModel = Mage::getSingleton('wordpress/post_category');
-
-		if (($base = $categoryModel->getUriPrefix()) !== '') {
-			$base = ltrim($base . '/', '/');
-
-			if (strpos(Mage::helper('wordpress/router')->getBlogUri(), $base) !== 0) {
-				return false;
-			}
-		}
-
-		if (($routes = $categoryModel->getAllUris()) !== false) {
-			foreach($routes as $routeId => $route) {
-				$this->addRoute($base . $route, '*/post_category/view', array('id' => $routeId));
-			}
-		}
-
-		return $this;
-	}
-
-	/**
-	 * Check whether the URI is for a post with the non-canonical category URI
-	 * If so, redirect to canonical category URL
-	 *
-	 * @param string $uri = ''
-	 * @return $this
-	 */
-	protected function _getPostNonCanonicalRoutes($uri = '')
-	{
-		$categoryModel = Mage::getSingleton('wordpress/post_category');
-
-		if (($base = $categoryModel->getUriPrefix()) !== '') {
-			$base = ltrim($base . '/', '/');
-		}
-
-		if (($routes = $categoryModel->getAllUris()) !== false) {
-			foreach($routes as $routeId => $route) {
-				if ($base && strpos($route, $base) === 0) {
-					$route = substr($route, strlen($base));
-				}
-
-				if (preg_match('/^' . preg_quote(rtrim($route, '/'), '/') . '\/([^\/]{1,})[\/]{0,1}$/', $uri, $match)) {
-					$category = Mage::getModel('wordpress/post_category')->load($routeId);
-					
-					if ($category->getId()) {
-						$post = Mage::getModel('wordpress/post')->load($match[1], 'post_name');
-						
-						if ($post->getId()) {
-							if ($category->containsPost($post)) {
-								$this->addRoute($uri, '*/post/view', array('id' => $post->getId(), '__redirect_to' => $post->getPermalink()));
-								break;
-							}
-						}
-					}
-				}
-			}
-		}
-
-		return $this;
-	}
-	
-	/**
-	 * Generate the page routers
-	 *
-	 * @param string $uri = ''
-	 * @return false|$this
-	 */
-	protected function _getPageRoutes($uri = '')
-	{
-		if (($routes = Mage::getResourceSingleton('wordpress/page')->getAllUris()) !== false) {
-			$homepagePageId = $this->_getHomepagePageId();
-			
-			foreach($routes as $routeId => $route) {
-				$redirectTo = $homepagePageId && $homepagePageId == $routeId
-					? Mage::helper('wordpress')->getUrl()
-					: null;
-					
-				$this->addRoute($route, '*/page/view', array('id' => $routeId, '__redirect_to' => $redirectTo));
-			}
-			
-			return $this;
-		}
-		
-		return false;
-	}
-
-	/**
 	 * Generate the post routes
 	 *
 	 * @param string $uri = ''
@@ -228,9 +125,7 @@ class Fishpig_Wordpress_Controller_Router extends Fishpig_Wordpress_Controller_R
 	 */
 	protected function _getPostRoutes($uri = '')
 	{
-		$routes = Mage::getResourceSingleton('wordpress/post')->getPermalinksByUri($uri);
-
-		if ($routes === false) {
+		if (($routes = Mage::getResourceSingleton('wordpress/post')->getPermalinksByUri($uri)) === false) {
 			return false;
 		}
 
@@ -243,28 +138,6 @@ class Fishpig_Wordpress_Controller_Router extends Fishpig_Wordpress_Controller_R
 
 		return $this;
 	}
-
-	/**
-	 * Generate the post routes
-	 *
-	 * @param string $uri = ''
-	 * @return false|$this
-	 */
-	protected function _getPostAttachmentRoutes($uri = '')
-	{
-		if (!preg_match('/^(.*)\/attachment\/([^\/]+$)/', $uri, $match)) {
-			return $this;
-		}
-
-		$attachment = Mage::getModel('wordpress/post')->setPostType('attachment')->load($match[2], 'post_name');
-		
-		if (!$attachment->getId() || !$attachment->getGuid()) {
-			return $this;
-		}
-
-		header('Location: ' . $attachment->getData('guid'));
-		exit;
-	}
 	
 	/**
 	 * Get the custom taxonomy URI's
@@ -273,18 +146,18 @@ class Fishpig_Wordpress_Controller_Router extends Fishpig_Wordpress_Controller_R
 	 * @param string $uri = ''
 	 * @return $this
 	 */
-	protected function _getCustomTaxonomyUris($uri = '')
+	protected function _getTaxonomyRoutes($uri = '')
 	{
-		$parts = explode('/', $uri);
+		foreach(Mage::helper('wordpress/app')->getTaxonomies() as $taxonomy) {
+			if (($routes = $taxonomy->getUris($uri)) !== false) {
 
-		$term = Mage::getModel('wordpress/term')->setTaxonomy(array_shift($parts));
-
-		if (($routes = $term->getAllUris()) !== false) {
-			foreach($routes as $routeId => $route) {
-				$this->addRoute($term->getTaxonomyType() . '/' . $route, '*/term/view', array('id' => $routeId, 'taxonomy' => $term->getTaxonomyType()));
+				foreach($routes as $routeId => $route) {
+					$this->addRoute($route, '*/term/view', array('id' => $routeId, 'taxonomy' => $taxonomy->getTaxonomyType()));
+					$this->addRoute(rtrim($route, '/') . '/feed', '*/term/feed', array('id' => $routeId, 'taxonomy' => $taxonomy->getTaxonomyType()));
+				}
 			}
 		}
-		
+
 		return $this;
 	}
 	

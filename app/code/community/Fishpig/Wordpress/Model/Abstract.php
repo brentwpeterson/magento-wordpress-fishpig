@@ -83,7 +83,7 @@ abstract class Fishpig_Wordpress_Model_Abstract extends Mage_Core_Model_Abstract
 		if (is_null($field) && isset(self::$_objectCache[$class][$id])) {
 			return self::$_objectCache[$class][$id];
 		}
-		
+
 		parent::load($id, $field);
 		
 		if ($this->getId()) {
@@ -243,7 +243,7 @@ abstract class Fishpig_Wordpress_Model_Abstract extends Mage_Core_Model_Abstract
 	protected function _getRealMetaKey($key)
 	{
 		if ($this->_metaHasPrefix) {
-			$tablePrefix = Mage::helper('wordpress/database')->getTablePrefix();
+			$tablePrefix = Mage::helper('wordpress/app')->getTablePrefix();
 
 			if ($tablePrefix !== 'wp_') {
 				if (preg_match('/^(wp_)(.*)$/', $key, $matches)) {
@@ -307,7 +307,6 @@ abstract class Fishpig_Wordpress_Model_Abstract extends Mage_Core_Model_Abstract
 	 */
 	public function getPostCollection()
 	{
-		return Mage::getResourceModel('wordpress/post_collection')
-			->setFlag('source', $this);
+		return Mage::getResourceModel('wordpress/post_collection')->setFlag('source', $this);
 	}
 }

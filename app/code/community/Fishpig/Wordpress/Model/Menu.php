@@ -38,13 +38,15 @@ class Fishpig_Wordpress_Model_Menu extends Fishpig_Wordpress_Model_Term
 	 */
 	public function getMenuItems()
 	{
-		return $this->getPostCollection();
+		return $this->_getObjectResourceModel()
+			->addIsViewableFilter()
+			->addTermIdFilter($this->getId(), $this->getTaxonomy());
 	}
 
 	/**
 	 * Retrieve the object resource model
 	 *
-	 * @return Fishpig_Wordpress_Model_Resource_Post_Collection_Abstract
+	 * @return Fishpig_Wordpress_Model_Resource_Post_Collection
 	 */    
     protected function _getObjectResourceModel()
     {

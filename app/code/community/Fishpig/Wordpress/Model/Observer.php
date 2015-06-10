@@ -119,9 +119,8 @@ class Fishpig_Wordpress_Model_Observer extends Varien_Object
 			'daily',
 			'1.0'
 		);
-					
+
 		$posts = Mage::getResourceModel('wordpress/post_collection')
-			->setFlag('include_all_post_types', true)
 			->addIsViewableFilter()
 			->setOrderByPostDate()
 			->load();
@@ -133,21 +132,6 @@ class Fishpig_Wordpress_Model_Observer extends Varien_Object
 				$post->getPostModifiedDate('Y-m-d'),
 				'monthly',
 				'0.5'
-			);
-		}
-		
-		$pages = Mage::getResourceModel('wordpress/page_collection')
-			->addIsViewableFilter()
-			->setOrderByPostDate()
-			->load();
-			
-		foreach($pages as $page) {
-			$xml .= sprintf(
-				'<url><loc>%s</loc><lastmod>%s</lastmod><changefreq>%s</changefreq><priority>%.1f</priority></url>',
-				htmlspecialchars($page->getUrl()),
-				$page->getPostModifiedDate('Y-m-d'),
-				'monthly',
-				'0.8'
 			);
 		}
 

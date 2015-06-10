@@ -36,8 +36,6 @@ class Fishpig_Wordpress_SearchController extends Fishpig_Wordpress_Controller_Ab
 	  */
 	public function indexAction()
 	{
-		$this->_rootTemplates[] = 'post_list';
-		
 		$this->_addCustomLayoutHandles(array(
 			'wordpress_search_index',
 			'wordpress_post_list',

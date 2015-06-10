@@ -119,7 +119,7 @@ class Fishpig_Wordpress_Helper_Data extends Fishpig_Wordpress_Helper_Abstract
 	 */
 	public function getTableName($table)
 	{
-		return Mage::helper('wordpress/database')->getTableName($table);
+		return Mage::getSingleton('core/resource')->getTableName($table);
 	}
 	
 	/**
@@ -217,7 +217,6 @@ class Fishpig_Wordpress_Helper_Data extends Fishpig_Wordpress_Helper_Abstract
 	 */
 	public function isPluginEnabled($name)
 	{
-		$name = Mage::getSingleton('catalog/product_url')->formatUrlKey($name);
 		$plugins = array();
 
 		if ($plugins = $this->getWpOption('active_plugins')) {
@@ -240,7 +239,37 @@ class Fishpig_Wordpress_Helper_Data extends Fishpig_Wordpress_Helper_Abstract
 
 		return false;
 	}
-
+	
+	public function enablePlugin($plugin)
+	{
+		if ($this->isPluginEnabled($plugin)) {
+			return true;
+		}
+		
+		if ($db = Mage::helper('wordpress/app')->getDbConnection()) {
+			if ($plugins = $this->getWpOption('active_plugins')) {
+				$db->update(
+					Mage::getSingleton('core/resource')->getTableName('wordpress/option'),
+					array('option_value' => serialize(array_merge(unserialize($plugins), array($plugin)))),
+					$db->quoteInto('option_name=?', 'active_plugins')
+				);
+			}
+			else {
+				$db->insert(
+					Mage::getSingleton('core/resource')->getTableName('wordpress/option'),
+					array(
+						'option_name' => 'active_plugins',
+						'option_value' => serialize(array($plugin))
+					)
+				);
+			}
+			
+			return true;			
+		}
+		
+		return false;
+	}
+	
 	/**
 	 * Determine whether to force single store
 	 *

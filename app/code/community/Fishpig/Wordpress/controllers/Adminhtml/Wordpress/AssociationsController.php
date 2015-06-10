@@ -56,7 +56,7 @@ class Fishpig_Wordpress_Adminhtml_Wordpress_AssociationsController extends Mage_
 			}
 */
 
-			if (!Mage::helper('wordpress/database')->connect()) {
+			if (Mage::helper('wordpress/app')->getDbConnection() === false) {
 				return $this->_forward('noWordPressDatabase');;
 			}
 			

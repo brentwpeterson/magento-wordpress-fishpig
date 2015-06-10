@@ -23,8 +23,8 @@ class Fishpig_Wordpress_IndexController extends Fishpig_Wordpress_Controller_Abs
 	 */
 	public function getEntityObject()
 	{
-		if (Mage::registry('wordpress_page')) {
-			return Mage::registry('wordpress_page');
+		if (Mage::registry('wordpress_post')) {
+			return Mage::registry('wordpress_post');
 		}
 
 		return new Varien_Object(array(
@@ -43,11 +43,8 @@ class Fishpig_Wordpress_IndexController extends Fishpig_Wordpress_Controller_Abs
 			'wordpress_homepage',
 			'wordpress_post_list',
 		));
-		
-		$this->_initLayout();
 
-		$this->_rootTemplates[] = 'homepage';
-		
+		$this->_initLayout();
 		$this->renderLayout();
 	}
 	
@@ -111,8 +108,6 @@ class Fishpig_Wordpress_IndexController extends Fishpig_Wordpress_Controller_Abs
 	 */
 	public function newBlogUserAction()
 	{
-
-
 	}
 	
 	/**
@@ -122,9 +117,7 @@ class Fishpig_Wordpress_IndexController extends Fishpig_Wordpress_Controller_Abs
 	 */
 	public function applyPostPasswordAction()
 	{
-		$password = $this->getRequest()->getPost('post_password');
-		
-		Mage::getSingleton('wordpress/session')->setPostPassword($password);
+		Mage::getSingleton('core/session')->setPostPassword($this->getRequest()->getPost('post_password'));
 		
 		if ($redirectTo = $this->getRequest()->getPost('redirect_to')) {
 			$this->_redirectUrl($redirectTo);	

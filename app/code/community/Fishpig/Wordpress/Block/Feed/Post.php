@@ -42,7 +42,9 @@ class Fishpig_Wordpress_Block_Feed_Post extends Fishpig_Wordpress_Block_Feed_Abs
 				'email' => $post->getAuthor()->getUserEmail(),
 			));
 			
-			$entry->setDescription($this->displayExceprt() ? $post->getPostExcerpt() : $post->getPostContent());
+			$description = $this->displayExceprt() ? $post->getPostExcerpt() : $post->getPostContent();
+
+			$entry->setDescription($description ? $description : '&nbsp;');
 			
 			foreach($post->getParentCategories() as $category) {
 				$entry->addCategory(array(

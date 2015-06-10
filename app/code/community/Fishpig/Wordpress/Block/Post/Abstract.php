@@ -96,10 +96,10 @@ abstract class Fishpig_Wordpress_Block_Post_Abstract extends Fishpig_Wordpress_B
 	/**
 	 * Set the post as the current post in all child blocks
 	 *
-	 * @param Fishpig_Wordpress_Model_Post_Abstract $post
+	 * @param Fishpig_Wordpress_Model_Post $post
 	 * @return $this
 	 */
-	public function preparePost(Fishpig_Wordpress_Model_Post_Abstract $post)
+	public function preparePost(Fishpig_Wordpress_Model_Post $post)
 	{	
 		if (($rootBlock = $this->_getBlockForPostPrepare()) !== false) {
 			foreach($rootBlock->getChild('') as $alias => $block) {

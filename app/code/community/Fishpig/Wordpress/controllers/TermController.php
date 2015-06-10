@@ -9,6 +9,13 @@
 class Fishpig_Wordpress_TermController extends Fishpig_Wordpress_Controller_Abstract
 {
 	/**
+	 * Blocks used to generate RSS feed items
+	 *
+	 * @var string
+	 */
+	 protected $_feedBlock = 'term_view';
+	 
+	/**
 	 * Used to do things en-masse
 	 * eg. include canonical URL
 	 *
@@ -29,13 +36,7 @@ class Fishpig_Wordpress_TermController extends Fishpig_Wordpress_Controller_Abst
 	{
 		parent::preDispatch();
 		
-		$term = $this->_initTerm();
-		
-		if ($term->isDefaultTerm()) {
-			$this->_forceForwardViaException('noRoute');
-			return false;
-		}
-		
+		$term = $this->_initTerm();		
 
 		return $this;	
 	}
@@ -49,17 +50,15 @@ class Fishpig_Wordpress_TermController extends Fishpig_Wordpress_Controller_Abst
 		$term = Mage::registry('wordpress_term');
 		
 		$this->_addCustomLayoutHandles(array(
+			'wordpress_' . $term->getTaxonomyType() . '_view',
+			'wordpress_' . $term->getTaxonomyType() . '_view_' . $term->getId(),
+			'wordpress_' . $term->getTaxonomyType() . '_' . $term->getId(), // Legacy
+			'wordpress_post_' . $term->getTaxonomyType() . '_view', // Legacy
 			'wordpress_term_view',
-			'wordpress_term_index',
-			'wordpress_term',
 			'wordpress_post_list',
 		));
-			
-		$this->_initLayout();
-
-		$this->_rootTemplates[] = 'post_list';
 		
-#		$this->addCrumb('term_taxonomy', array('label' => $term->getTaxonomyLabel()));
+		$this->_initLayout();
 		
 		$tree = array($term);
 		$buffer = $term;
@@ -92,20 +91,16 @@ class Fishpig_Wordpress_TermController extends Fishpig_Wordpress_Controller_Abst
 			return $term;
 		}
 
-		$term = Mage::getModel('wordpress/term');
-		
-		if ($tax = $this->getRequest()->getParam('taxonomy')) {
-			$term->setTaxonomy($tax);
+		$term = Mage::getModel('wordpress/term')
+			->setTaxonomy($this->getRequest()->getParam('taxonomy'))
+			->load($this->getRequest()->getParam('id'));
+
+		if (!$term->getId()) {
+			return false;
 		}
 		
-		$term->load($this->getRequest()->getParam('id'));
+		Mage::register('wordpress_term', $term);
 
-		if ($term->getId()) {
-			Mage::register('wordpress_term', $term);
-
-			return $term;
-		}
-
-		return false;
+		return $term;
 	}
 }

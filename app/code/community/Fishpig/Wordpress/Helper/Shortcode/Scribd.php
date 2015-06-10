@@ -22,10 +22,10 @@ class Fishpig_Wordpress_Helper_Shortcode_Scribd extends Fishpig_Wordpress_Helper
 	 * Apply the Vimeo short code
 	 *
 	 * @param string &$content
-	 * @param Fishpig_Wordpress_Model_Post_Abstract $object
+	 * @param Fishpig_Wordpress_Model_Post $post
 	 * @return void
 	 */	
-	protected function _apply(&$content, Fishpig_Wordpress_Model_Post_Abstract $object)
+	protected function _apply(&$content, Fishpig_Wordpress_Model_Post $post)
 	{
 		if (($shortcodes = $this->_getShortcodes($content)) !== false) {
 			foreach($shortcodes as $shortcode) {

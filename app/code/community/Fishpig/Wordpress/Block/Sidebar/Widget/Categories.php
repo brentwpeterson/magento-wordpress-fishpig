@@ -15,26 +15,23 @@ class Fishpig_Wordpress_Block_Sidebar_Widget_Categories extends Fishpig_Wordpres
 	 */
 	public function getCategories()
 	{
-		if (!$this->hasCategories()) {
-			if ($this->getTaxonomy()) {
-				$collection = Mage::getResourceModel('wordpress/term_collection')
-					->addTaxonomyFilter($this->getTaxonomy());
+		$collection = Mage::getResourceModel('wordpress/term_collection')
+			->addTaxonomyFilter($this->getTaxonomy())
+			->addParentIdFilter($this->getParentId())
+			->addHasObjectsFilter();
 
-				$collection->getSelect()
-					->reset('order')
-					->order('name ASC');
-			}
-			else {
-				$collection = Mage::getResourceModel('wordpress/post_category_collection');
-			}
-			
-			$collection->addParentIdFilter($this->getParentId())
-				->addHasObjectsFilter();
+		$collection->getSelect()
+			->reset('order')
+			->order('name ASC');
 
-			$this->setCategories($collection);
-		}
-		
-		return $this->_getData('categories');
+		return $collection;
+	}
+	
+	public function getTaxonomy()
+	{
+		return $this->_getData('taxonomy')
+			? $this->_getData('taxonomy')
+			: 'category';
 	}
 	
 	/**

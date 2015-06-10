@@ -5,6 +5,19 @@
 # URL:  http://fishpig.co.uk/magento/wordpress-integration/
 ##
 
+10/06/2015 - 4.0.0.3
+- Fixed issue with sub-categories not displaying in sidebar widget
+- Fixed WordPress SEO issue
+
+09/06/2015 - 4.0.0.2
+- Fixed XML sitemap generation error
+
+09/06/2015 - 4.0.0.0
+- Game on! Big changes!
+- The Page model has been removed and is now served via the Post model.
+- The Post_Category and Post_Tag models have been removed and can be accessed via the Term model
+- For more information, please see http://fishpig.co.uk/magento/wordpress-integration/upgrading-to-version-4/
+
 26/05/2015 - 3.1.1.30
 - Added social media share buttons to extension
 

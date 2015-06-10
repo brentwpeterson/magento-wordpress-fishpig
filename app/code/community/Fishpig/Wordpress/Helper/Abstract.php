@@ -100,24 +100,31 @@ class Fishpig_Wordpress_Helper_Abstract extends Mage_Core_Helper_Abstract
 	 */
 	public function getWpOption($key, $default = null)
 	{
-		$cacheKey = '_wp_option_' . $key;
-		
-		if (!$this->_isCached($cacheKey)) {
-			$this->_cache($cacheKey, $default);
+		$db = $this instanceof Fishpig_Wordpress_Helper_App
+			? $this->getDbConnection()
+			: Mage::helper('wordpress/app')->getDbConnection();
 			
-			try {
-				$option = Mage::getModel('wordpress/option')->load($key, 'option_name');
-				
-				if ($option->getId() && $option->getOptionValue()) {
-					$this->_cache($cacheKey, $option->getOptionValue());
-				}
+		if ($db === false) {
+			return false;
+		}
+
+		try {
+			$select = $db->select()
+				->from(Mage::getSingleton('core/resource')->getTableName('wordpress/option'), 'option_value')
+				->where('option_name = ?', $key)
+				->limit(1);
+
+			if ($value = $db->fetchOne($select)) {
+				return $value;
 			}
-			catch (Exception $e) {
-				$this->_cache($cacheKey, '');
-			}
+			
+			return $default;
+		}
+		catch (Exception $e) {
+			$this->log($e->getMessage());
 		}
 		
-		return $this->_cached($cacheKey);
+		return false;
 	}
 	
 	/**
@@ -167,7 +174,7 @@ class Fishpig_Wordpress_Helper_Abstract extends Mage_Core_Helper_Abstract
 		if (!$this->_isCached('default_store')) {	
 			$connection = Mage::getSingleton('core/resource')->getConnection('core_read');
 			$select = $connection->select()
-				->from(array('_store_table' => Mage::helper('wordpress/database')->getTableName('core/store')), 'store_id')
+				->from(array('_store_table' => Mage::helper('wordpress/app')->getTableName('core/store')), 'store_id')
 				->where('_store_table.store_id > ?', 0)
 				->where('_store_table.code != ?', 'admin')
 				->limit(1)

@@ -42,8 +42,6 @@ class Fishpig_Wordpress_ArchiveController extends Fishpig_Wordpress_Controller_A
 			
 		$this->_initLayout();
 
-		$this->_rootTemplates[] = 'post_list';
-
 		$this->_title($archive->getName());
 		$this->addCrumb('archive_label', array('label' => $this->__('Archives')));
 		$this->addCrumb('archive', array('label' => $archive->getName()));

@@ -6,7 +6,7 @@
  * @author      Ben Tideswell <help@fishpig.co.uk>
  */
 
-class Fishpig_Wordpress_Model_Resource_Menu_Item_Collection extends Fishpig_Wordpress_Model_Resource_Post_Collection_Abstract
+class Fishpig_Wordpress_Model_Resource_Menu_Item_Collection extends Fishpig_Wordpress_Model_Resource_Post_Collection
 {
 	/**
 	 * Name prefix of events that are dispatched by model

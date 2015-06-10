@@ -23,12 +23,12 @@ class Fishpig_Wordpress_Block_Sidebar_Widget_Archives extends Fishpig_Wordpress_
 	public function getArchives()
 	{
 		if (is_null($this->_archiveCollection)) {
-			$table = Mage::helper('wordpress/database')->getTableName('posts');
+			$table = Mage::helper('wordpress/app')->getTableName('posts');
 			$sql = "SELECT COUNT(ID) AS post_count, CONCAT(SUBSTRING(post_date, 1, 4), '/', SUBSTRING(post_date, 6, 2)) as archive_date 
 					FROM `" . $table . "` AS `main_table` WHERE (`main_table`.`post_type`='post') AND (`main_table`.`post_status` ='publish') 
 					GROUP BY archive_date ORDER BY archive_date DESC";
 					
-			$dates = Mage::helper('wordpress/database')->getReadAdapter()->fetchAll($sql);
+			$dates = Mage::helper('wordpress/app')->getDbConnection()->fetchAll($sql);
 			$collection  = new Varien_Data_Collection();
 			
 			foreach($dates as $date) {

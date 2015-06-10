@@ -15,30 +15,32 @@ class Fishpig_Wordpress_Block_Sidebar_Widget_Tagcloud extends Fishpig_Wordpress_
 	 */
 	public function getTags()
 	{
-		if (!$this->hasTags()) {
-			$this->setTags(false);
+		if ($this->hasTags()) {
+			return $this->_getData('tags');
+		}
+		
+		$this->setTags(false);
+		
+		$tags = Mage::getResourceModel('wordpress/term_collection')
+			->addCloudFilter($this->getTaxonomy())
+			->setOrderByName()
+			->load();
 
-			$tags = Mage::getResourceModel('wordpress/post_tag_collection')
-				->addTagCloudFilter()
-				->setOrderByName()
-				->load();
-
-			if (count($tags) > 0) {
-				$max = 0;
-				$hasPosts = false;
+		if (count($tags) > 0) {
+			$max = 0;
+			$hasPosts = false;
+			
+			foreach($tags as $tag) {
+				$max = $tag->getCount() > $max ? $tag->getCount() : $max;
 				
-				foreach($tags as $tag) {
-					$max = $tag->getCount() > $max ? $tag->getCount() : $max;
-					
-					if ($tag->getCount() > 0) {
-						$hasPosts = true;
-					}
+				if ($tag->getCount() > 0) {
+					$hasPosts = true;
 				}
-				
-				if ($hasPosts) {
-					$this->setMaximumPopularity($max);
-					$this->setTags($tags);
-				}
+			}
+			
+			if ($hasPosts) {
+				$this->setMaximumPopularity($max);
+				$this->setTags($tags);
 			}
 		}
 
@@ -48,10 +50,10 @@ class Fishpig_Wordpress_Block_Sidebar_Widget_Tagcloud extends Fishpig_Wordpress_
 	/**
 	 * Retrieve a font size for a tag
 	 *
-	 * @param Fishpig_Wordpress_Model_Post_Tag $tag
+	 * @param Varien_Object $tag
 	 * @return int
 	 */
-	public function getFontSize(Fishpig_Wordpress_Model_Post_Tag $tag)
+	public function getFontSize(Varien_Object $tag)
 	{
 		if ($this->getMaximumPopularity() > 0) {
 			$percentage = ($tag->getCount() * 100) / $this->getMaximumPopularity();

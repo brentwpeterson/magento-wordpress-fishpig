@@ -42,10 +42,10 @@
 			<tr>
 				<td>
 					<h3>
-						<?php echo $this->__('Magento WordPress Integration v%s', (string)$_config->getNode('modules/Fishpig_Wordpress/version')) ?>
+						<?php echo $this->__('Magento WordPress Integration %s', (string)$_config->getNode('modules/Fishpig_Wordpress/version')) ?>
 						<?php if (Mage::helper('wordpress')->isWordPressMU()): ?>
 							<span style="color:#666;">/</span> 
-							<?php echo $this->__('Multisite Integration v%s', (string)$_config->getNode('modules/Fishpig_Wordpress_Addon_Multisite/version')) ?>
+							<?php echo $this->__('Multisite Integration %s', (string)$_config->getNode('modules/Fishpig_Wordpress_Addon_Multisite/version')) ?>
 						<?php endif; ?>
 					</h3>
 				</td>

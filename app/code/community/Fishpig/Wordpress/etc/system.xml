@@ -12,14 +12,13 @@
             <tab>fishpig</tab>
             <sort_order>999</sort_order>
             <show_in_default>1</show_in_default>
-            <show_in_website>1</show_in_website>
             <show_in_store>1</show_in_store>
             <groups>
             	<module>
             		<label>WordPress Integration</label>
             		<sort_order>1</sort_order>
             		<show_in_default>1</show_in_default>
-            		<show_in_website>1</show_in_website>
+            		
             		<show_in_store>1</show_in_store>
 					<expanded>0</expanded>
             		<fields>
@@ -29,7 +28,7 @@
 							<source_model>adminhtml/system_config_source_yesno</source_model>
             				<sort_order>1</sort_order>
             				<show_in_default>1</show_in_default>
-            				<show_in_website>1</show_in_website>
+            				
             				<show_in_store>1</show_in_store>
             			</enabled>
             			<check_for_updates>
@@ -45,7 +44,7 @@
             		<label>Database</label>
             		<sort_order>6</sort_order>
             		<show_in_default>1</show_in_default>
-            		<show_in_website>1</show_in_website>
+            		
             		<show_in_store>1</show_in_store>
 					<expanded>0</expanded>
             		<fields>
@@ -55,7 +54,7 @@
 							<source_model>adminhtml/system_config_source_yesno</source_model>
             				<sort_order>1</sort_order>
             				<show_in_default>1</show_in_default>
-            				<show_in_website>1</show_in_website>
+            				
             				<show_in_store>1</show_in_store>
             			</is_shared>
             			<host>
@@ -63,7 +62,7 @@
             				<frontend_type>text</frontend_type>
             				<sort_order>6</sort_order>
             				<show_in_default>1</show_in_default>
-            				<show_in_website>1</show_in_website>
+            				
             				<show_in_store>1</show_in_store>
             				<validate>required-entry</validate>
             				<depends><is_shared>0</is_shared></depends>
@@ -74,7 +73,7 @@
             				<backend_model>wordpress/system_config_backend_encrypted</backend_model>
             				<sort_order>11</sort_order>
             				<show_in_default>1</show_in_default>
-            				<show_in_website>1</show_in_website>
+            				
             				<show_in_store>1</show_in_store>
             				<validate>required-entry</validate>
             				<depends><is_shared>0</is_shared></depends>
@@ -85,7 +84,7 @@
             				<backend_model>wordpress/system_config_backend_encrypted</backend_model>
             				<sort_order>16</sort_order>
             				<show_in_default>1</show_in_default>
-            				<show_in_website>1</show_in_website>
+            				
             				<show_in_store>1</show_in_store>
             				<validate>required-entry</validate>
             				<depends><is_shared>0</is_shared></depends>
@@ -96,7 +95,7 @@
             				<backend_model>wordpress/system_config_backend_encrypted</backend_model>
             				<sort_order>21</sort_order>
             				<show_in_default>1</show_in_default>
-            				<show_in_website>1</show_in_website>
+            				
             				<show_in_store>1</show_in_store>
             				<validate>required-entry</validate>
             				<depends><is_shared>0</is_shared></depends>
@@ -106,7 +105,7 @@
             				<frontend_type>text</frontend_type>
             				<sort_order>26</sort_order>
             				<show_in_default>1</show_in_default>
-            				<show_in_website>1</show_in_website>
+            				
             				<show_in_store>1</show_in_store>
             				<depends><is_shared>0</is_shared></depends>
             			</charset>
@@ -115,7 +114,7 @@
                             <frontend_type>text</frontend_type>
                             <sort_order>31</sort_order>
                             <show_in_default>1</show_in_default>
-                            <show_in_website>1</show_in_website>
+                            
                             <show_in_store>1</show_in_store>
                         </table_prefix>
             		</fields>
@@ -124,7 +123,7 @@
             		<label>Integration</label>
 					<sort_order>16</sort_order>
 					<show_in_default>1</show_in_default>
-					<show_in_website>1</show_in_website>
+					
 					<show_in_store>1</show_in_store>
 					<expanded>0</expanded>
 					<fields>
@@ -135,7 +134,7 @@
 							<source_model>adminhtml/system_config_source_yesno</source_model>
 							<sort_order>1</sort_order>
 							<show_in_default>1</show_in_default>
-                            <show_in_website>1</show_in_website>
+                            
                             <show_in_store>1</show_in_store>
                     	</full>
                         <route>
@@ -145,7 +144,7 @@
                             <validate>required-entry validate-blog-route</validate>
                             <sort_order>11</sort_order>
                             <show_in_default>1</show_in_default>
-                            <show_in_website>1</show_in_website>
+                            
                             <show_in_store>1</show_in_store>
 							<depends><full>1</full></depends>
                         </route>
@@ -157,7 +156,7 @@
                             <frontend_type>text</frontend_type>
                             <sort_order>21</sort_order>
                             <show_in_default>1</show_in_default>
-                            <show_in_website>1</show_in_website>
+                            
                             <show_in_store>1</show_in_store>
                         </path>
         				<force_single_store>
@@ -167,7 +166,7 @@
 							<frontend_type>select</frontend_type>
 							<source_model>adminhtml/system_config_source_yesno</source_model>
 							<show_in_default>1</show_in_default>
-							<show_in_website>1</show_in_website>
+							
 							<show_in_store>1</show_in_store>     
         				</force_single_store>
 					</fields>
@@ -203,71 +202,16 @@
 					<label>Add-Ons</label>
 					<sort_order>20</sort_order>
 					<show_in_default>1</show_in_default>
-					<show_in_website>1</show_in_website>
+					
 					<show_in_store>1</show_in_store>
 					<fields />
             	</extend>
-        		<template>
-        			<label>Template</label>
-        			<sort_order>21</sort_order>
-        			<show_in_default>1</show_in_default>
-        			<show_in_website>1</show_in_website>
-        			<show_in_store>1</show_in_store>
-					<expanded>0</expanded>
-        			<fields>
-            			<default>
-            				<label>Default</label>
-            				<frontend_type>select</frontend_type>
-            				<source_model>wordpress/system_config_source_page_template</source_model>
-            				<sort_order>1</sort_order>
-            				<show_in_default>1</show_in_default>
-            				<show_in_website>1</show_in_website>
-            				<show_in_store>1</show_in_store>
-            			</default>
-						<homepage>
-            				<label>Home</label>
-            				<frontend_type>select</frontend_type>
-            				<source_model>wordpress/system_config_source_page_template</source_model>
-            				<sort_order>6</sort_order>
-            				<show_in_default>1</show_in_default>
-            				<show_in_website>1</show_in_website>
-            				<show_in_store>1</show_in_store>
-						</homepage>
-						<post_list>
-            				<label>Posts</label>
-            				<frontend_type>select</frontend_type>
-            				<source_model>wordpress/system_config_source_page_template</source_model>
-            				<sort_order>11</sort_order>
-            				<show_in_default>1</show_in_default>
-            				<show_in_website>1</show_in_website>
-            				<show_in_store>1</show_in_store>
-						</post_list>
-						<post_view>
-            				<label>Post</label>
-            				<frontend_type>select</frontend_type>
-            				<source_model>wordpress/system_config_source_page_template</source_model>
-            				<sort_order>16</sort_order>
-            				<show_in_default>1</show_in_default>
-            				<show_in_website>1</show_in_website>
-            				<show_in_store>1</show_in_store>
-						</post_view>
-						<page>
-            				<label>Page</label>
-            				<frontend_type>select</frontend_type>
-            				<source_model>wordpress/system_config_source_page_template</source_model>
-            				<sort_order>21</sort_order>
-            				<show_in_default>1</show_in_default>
-            				<show_in_website>1</show_in_website>
-            				<show_in_store>1</show_in_store>
-						</page>
-        			</fields>
-        		</template>
             	<menu>
             		<label>Menu</label>
             		<comment>Append a WordPress custom menu onto your Magento Topmenu</comment>
             		<sort_order>26</sort_order>
             		<show_in_default>1</show_in_default>
-            		<show_in_website>1</show_in_website>
+            		
             		<show_in_store>1</show_in_store>
 					<expanded>0</expanded>
             		<fields>
@@ -277,7 +221,7 @@
             				<frontend_type>select</frontend_type>
             				<source_model>adminhtml/system_config_source_yesno</source_model>
 							<show_in_default>1</show_in_default>
-							<show_in_website>1</show_in_website>
+							
 							<show_in_store>1</show_in_store>
             			</enabled>
             			<id>
@@ -287,7 +231,7 @@
             				<frontend_type>select</frontend_type>
             				<source_model>wordpress/system_config_source_menu</source_model>
 							<show_in_default>1</show_in_default>
-							<show_in_website>1</show_in_website>
+							
 							<show_in_store>1</show_in_store>
 							<depends><enabled>1</enabled></depends>
             			</id>
@@ -297,7 +241,7 @@
             		<label>Top Link</label>
             		<sort_order>31</sort_order>
             		<show_in_default>1</show_in_default>
-            		<show_in_website>1</show_in_website>
+            		
             		<show_in_store>1</show_in_store>
 					<expanded>0</expanded>
             		<fields>
@@ -307,7 +251,7 @@
 							<frontend_type>select</frontend_type>
 							<source_model>adminhtml/system_config_source_yesno</source_model>
 							<show_in_default>1</show_in_default>
-							<show_in_website>1</show_in_website>
+							
 							<show_in_store>1</show_in_store>     
         				</enabled>
         				<label>
@@ -316,7 +260,7 @@
         					<sort_order>52</sort_order>
 							<frontend_type>text</frontend_type>
 							<show_in_default>1</show_in_default>
-							<show_in_website>1</show_in_website>
+							
 							<show_in_store>1</show_in_store>
 							<depends><enabled>1</enabled></depends>
         				</label>
@@ -325,7 +269,7 @@
             				<frontend_type>text</frontend_type>
             				<sort_order>53</sort_order>
             				<show_in_default>1</show_in_default>
-            				<show_in_website>1</show_in_website>
+            				
             				<show_in_store>1</show_in_store>
 							<depends><enabled>1</enabled></depends>
         				</position>
@@ -335,7 +279,7 @@
         			<label>Misc</label>
         			<sort_order>500</sort_order>
         			<show_in_default>1</show_in_default>
-        			<show_in_website>1</show_in_website>
+        			
         			<show_in_store>1</show_in_store>
         			<fields>
         				<include_css>
@@ -345,7 +289,7 @@
 							<frontend_type>select</frontend_type>
 							<source_model>adminhtml/system_config_source_yesno</source_model>
 							<show_in_default>1</show_in_default>
-							<show_in_website>1</show_in_website>
+							
 							<show_in_store>1</show_in_store>     
         				</include_css>
         				<sidebar_left_empty>
@@ -354,7 +298,7 @@
 							<frontend_type>select</frontend_type>
 							<source_model>adminhtml/system_config_source_yesno</source_model>
 							<show_in_default>1</show_in_default>
-							<show_in_website>1</show_in_website>
+							
 							<show_in_store>1</show_in_store>     
         				</sidebar_left_empty>
         				<sidebar_right_empty>
@@ -363,7 +307,7 @@
 							<frontend_type>select</frontend_type>
 							<source_model>adminhtml/system_config_source_yesno</source_model>
 							<show_in_default>1</show_in_default>
-							<show_in_website>1</show_in_website>
+							
 							<show_in_store>1</show_in_store>     
         				</sidebar_right_empty>
 						<autop>
@@ -372,7 +316,7 @@
             				<frontend_type>select</frontend_type>
             				<source_model>adminhtml/system_config_source_yesno</source_model>
 							<show_in_default>1</show_in_default>
-							<show_in_website>1</show_in_website>
+							
 							<show_in_store>1</show_in_store>
 		        		</autop>
 					</fields>
@@ -381,7 +325,7 @@
         			<label>Social Media Buttons</label>
         			<sort_order>500</sort_order>
         			<show_in_default>1</show_in_default>
-        			<show_in_website>1</show_in_website>
+        			
         			<show_in_store>1</show_in_store>
         			<fields>
         				<enabled>
@@ -390,7 +334,7 @@
 							<frontend_type>select</frontend_type>
 							<source_model>adminhtml/system_config_source_yesno</source_model>
 							<show_in_default>1</show_in_default>
-							<show_in_website>1</show_in_website>
+							
 							<show_in_store>1</show_in_store>     
         				</enabled>
         				<service>
@@ -399,7 +343,7 @@
 							<frontend_type>select</frontend_type>
 							<source_model>wordpress/system_config_source_social_media_service</source_model>
 							<show_in_default>1</show_in_default>
-							<show_in_website>1</show_in_website>
+							
 							<show_in_store>1</show_in_store>     
 							<depends><enabled>1</enabled></depends>
         				</service>
@@ -409,7 +353,7 @@
         					<sort_order>32</sort_order>
 							<frontend_type>editor</frontend_type>
 							<show_in_default>1</show_in_default>
-							<show_in_website>1</show_in_website>
+							
 							<show_in_store>1</show_in_store>     
 							<depends><enabled>1</enabled></depends>
         				</head_html>
@@ -419,7 +363,7 @@
         					<sort_order>33</sort_order>
 							<frontend_type>editor</frontend_type>
 							<show_in_default>1</show_in_default>
-							<show_in_website>1</show_in_website>
+							
 							<show_in_store>1</show_in_store>     
 							<depends><enabled>1</enabled></depends>
         				</buttons_html>

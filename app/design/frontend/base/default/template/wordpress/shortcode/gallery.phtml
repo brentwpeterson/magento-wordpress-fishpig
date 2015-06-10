@@ -21,7 +21,7 @@
 			<dt class="gallery-icon">
 				<a title="<?php echo $this->escapeHtml($image->getPostTitle()) ?>" rel="gallery<?php echo $this->getGalleryIt() ?>" href="<?php echo $image->getFullSizeImage() ?>"><img title="<?php echo $image->getPostTitle() ?>" alt="<?php echo $image->getPostTitle() ?>" class="attachment-<?php echo $this->getSize() ?>" src="<?php echo $image->getImageByType($this->getSize()) ? $image->getImageByType($this->getSize()) : $image->getAvailableImage() ?>" /></a>
 			</dt>
-			<?php if (($caption = trim($this->escapeHtml($image->getPostExcerpt()))) !== false): ?>
+			<?php if (($caption = trim($this->stripTags($image->getPostExcerpt()))) !== false): ?>
 				<dd class="wp-caption-text gallery-caption"><?php echo $caption ?></dd>
 			<?php endif; ?>
 		</dl>

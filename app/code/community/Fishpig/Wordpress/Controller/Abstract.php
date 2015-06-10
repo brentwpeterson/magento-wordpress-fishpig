@@ -14,13 +14,6 @@ abstract class Fishpig_Wordpress_Controller_Abstract extends Mage_Core_Controlle
 	 * @var string
 	 */
 	 protected $_feedBlock = false;
-
-	/**
-	 * Root templates to be used
-	 *
-	 * @var array
-	 */
-	protected $_rootTemplates = array('default');
 	
 	/**
 	 * Storage for breadcrumbs
@@ -91,26 +84,15 @@ abstract class Fishpig_Wordpress_Controller_Abstract extends Mage_Core_Controlle
 		if (!$this->isEnabledForStore()) {
 			return false;
 		}
-		
-		if (false) {
-			Mage::getSingleton('wordpress/blog');
-		}
-		else {
-			$helper = Mage::helper('wordpress/database');
-			
-			if (!$helper->isConnected() || !$helper->isQueryable()) {
-				return false;
-			}
-			
-			if ($helper->isSameDatabase()) {
-				$helper->getReadAdapter()->query('SET NAMES UTF8');
-			}
+
+		if (Mage::helper('wordpress/app')->getDbConnection() === false) {
+			return false;
 		}
 
 		if (($object = $this->getEntityObject()) === false) {
 			return false;
 		}
-
+		
 		Mage::dispatchEvent($this->getFullActionName() . '_init_after', array('object' => $object, $this->getRequest()->getControllerName() => $object, 'action' => $this));
 
 		return true;
@@ -139,15 +121,6 @@ abstract class Fishpig_Wordpress_Controller_Abstract extends Mage_Core_Controlle
 				Mage::helper('wordpress')->getUrl('comments/feed/'), 
 				'rel="alternate" type="application/rss+xml" title="' . Mage::helper('wordpress')->getWpOption('blogname') . ' &raquo; Comments Feed"'
 			);
-		}
-
-		$rootTemplates = array_reverse($this->_rootTemplates);
-
-		foreach($rootTemplates as $rootTemplate) {
-			if ($template = Mage::getStoreConfig('wordpress/template/' . $rootTemplate)) {
-				$this->getLayout()->helper('page/layout')->applyTemplate($template);
-				break;
-			}
 		}
 
 		Mage::dispatchEvent('wordpress_render_layout_before', array('object' => $this->getEntityObject(), 'action' => $this));

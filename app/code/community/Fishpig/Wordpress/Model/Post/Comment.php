@@ -111,8 +111,8 @@ class Fishpig_Wordpress_Model_Post_Comment extends Fishpig_Wordpress_Model_Abstr
 				}
 				
 				$fragment = '#comment-' . $this->getId();
-					
-				if (Mage::helper('wordpress/post')->permalinkHasTrainingSlash()) {
+
+				if ($post->getTypeInstance()->permalinkHasTrainingSlash()) {
 					$fragment = '/' . $fragment;
 				}
 
@@ -134,7 +134,7 @@ class Fishpig_Wordpress_Model_Post_Comment extends Fishpig_Wordpress_Model_Abstr
 			$this->setCommentPageId(1);
 			if ($post = $this->getPost()) {
 				$totalComments = count($post->getComments());
-				$commentsPerPage = Mage::helper('wordpress/post')->getCommentsPerPage();
+				$commentsPerPage = Mage::helper('wordpress')->getWpOption('comments_per_page', 50);
 
 				if ($commentsPerPage > 0 && $totalComments > $commentsPerPage) {
 					$it = 0;

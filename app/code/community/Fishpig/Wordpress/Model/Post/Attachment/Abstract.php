@@ -6,7 +6,7 @@
  * @author      Ben Tideswell <help@fishpig.co.uk>
  */
 
-abstract class Fishpig_Wordpress_Model_Post_Attachment_Abstract extends Fishpig_Wordpress_Model_Post_Abstract//Fishpig_Wordpress_Model_Abstract
+abstract class Fishpig_Wordpress_Model_Post_Attachment_Abstract extends Fishpig_Wordpress_Model_Post
 {
 	
 	protected function _afterLoad()
@@ -25,14 +25,14 @@ abstract class Fishpig_Wordpress_Model_Post_Attachment_Abstract extends Fishpig_
 		if ($this->getId() > 0 && !$this->getIsFullyLoaded()) {
 			$this->setIsFullyLoaded(true);
 
-			$select = Mage::helper('wordpress/database')->getReadAdapter()
+			$select = Mage::helper('wordpress/app')->getDbConnection()
 				->select()
 				->from($this->getResource()->getTable('wordpress/post_meta'), 'meta_value')
 				->where('meta_key=?', '_wp_attachment_metadata')
 				->where('post_id=?', $this->getId())
 				->limit(1);
 
-			$data = unserialize(Mage::helper('wordpress/database')->getReadAdapter()->fetchOne($select));
+			$data = unserialize(Mage::helper('wordpress/app')->getDbConnection()->fetchOne($select));
 
 			if (is_array($data)) {
 				foreach($data as $key => $value) {
