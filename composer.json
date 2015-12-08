@@ -1,0 +1,40 @@
+{
+  "name": "dersam/magento-wordpress-fishpig",
+  "description": "",
+  "version": "4.1.1.26",
+  "type": "magento-module",
+  "keywords": [
+    "magento",
+    "module",
+    "linus shops",
+    "canadass motorcycle",
+    "mx canada"
+  ],
+  "license": [
+    "MIT"
+  ],
+  "authors": [
+    {
+      "name": "Sam Schmidt",
+      "email": "samuel@dersam.net",
+      "homepage": "http://dersam.net",
+      "role": "Web Developer"
+    },
+    {
+      "name": "Linus Shops Inc",
+      "email": "corporate@linusshops.com",
+      "homepage": "http://www.linusshops.com"
+    }
+  ],
+  "repositories": [
+    {
+      "type": "composer",
+      "url": "http://packages.firegento.com"
+    }
+  ],
+  "require": {
+    "magento-hackathon/magento-composer-installer": "*"
+  },
+  "extra":{
+  }
+}
